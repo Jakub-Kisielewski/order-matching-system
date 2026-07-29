@@ -1,6 +1,6 @@
 package com.quant.clob.engine;
 
-class OrderBook {
+final class OrderBook {
     PriceLevel buyTree;
     PriceLevel sellTree;
     PriceLevel ask;

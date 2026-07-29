@@ -1,17 +1,13 @@
 package com.quant.clob.engine;
 
-class Order {
-    int idNumber;
-    boolean buyOrSell;
-    int shares;
-    int limit;
-    int entryTime;
-    int eventTime;
-    Order nextOrder;
-    Order prevOrder;
-    PriceLevel parentPriceLevel;
-
-    Order() {
-        
-    }
+final class Order {
+	int idNumber;
+	boolean buyOrSell;
+	int shares;
+	int limit;
+	int entryTime; // time order entered book
+	int eventTime; // timestamp for most recent update to order
+	Order nextOrder;
+	Order prevOrder;
+	PriceLevel parentPriceLevel;
 }
