@@ -11,6 +11,18 @@ final class OrderBook {
         if (priceLevel == null) {
             PriceLevel newPriceLevel = new PriceLevel();
             newPriceLevel.addOrder(order);
+            addPriceLevel(buyTree, newPriceLevel);
+        } else {
+            priceLevel.addOrder(order);
+        }
+    }
+
+    void addOrderToSellTree(Order order) {
+        PriceLevel priceLevel = priceLevelExists(sellTree, order.limit);
+        if (priceLevel == null) {
+            PriceLevel newPriceLevel = new PriceLevel();
+            newPriceLevel.addOrder(order);
+            addPriceLevel(buyTree, newPriceLevel);
         } else {
             priceLevel.addOrder(order);
         }
