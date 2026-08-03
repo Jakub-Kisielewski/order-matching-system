@@ -1,8 +1,9 @@
 package com.quant.clob.engine;
 
-final class Order {
-	int idNumber;
+public final class Order {
+	public int idNumber;
 	boolean isBuy;
+	boolean isMarketOrder; // market order fills volume completely, limit order fills up to limit and is then added to tree
 	int shares;
 	int limit;
 	int entryTime; // time order entered book
@@ -11,9 +12,9 @@ final class Order {
 	Order prevOrder;
 	PriceLevel parentPriceLevel;
 
-	Order(PriceLevel parentPriceLevel) {
+	public Order(PriceLevel parentPriceLevel) {
 		this.idNumber = 0;
-		this.isBuy = false;
+		this.isBuy = true;
 		this.shares = 10;
 		this.limit = 20;
 		this.entryTime = 0;
@@ -21,5 +22,10 @@ final class Order {
 		this.nextOrder = null;
 		this.prevOrder = null;
 		this.parentPriceLevel = parentPriceLevel;
+	}
+
+	@Override
+	public String toString() {
+		return "id" + idNumber + " prevOrder" + prevOrder.idNumber + " parentpricelevel" + parentPriceLevel.toString();
 	}
 }

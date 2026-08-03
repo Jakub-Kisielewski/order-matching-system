@@ -11,5 +11,9 @@ public final class MatchingEngine {
   public void init() {
 
   }
+
+  public void seedOrderBook() {
+
+  }
   
 }

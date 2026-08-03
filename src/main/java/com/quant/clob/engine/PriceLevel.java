@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class PriceLevel {
-    int priceLevel = 0;
+    public int priceLevel = 0;
     int size = 0;
     int totalVolume = 0;
     PriceLevel parent;
     PriceLevel leftChild;
     PriceLevel rightChild;
     Order headOrder; // oldest order
-    Order tailOrder; // newest order
+    public Order tailOrder; // newest order
 
     public PriceLevel() {
         this.priceLevel = 0;

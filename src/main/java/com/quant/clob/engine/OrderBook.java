@@ -1,12 +1,31 @@
 package com.quant.clob.engine;
 
-final class OrderBook {
-    PriceLevel buyTree;
-    PriceLevel sellTree;
+public final class OrderBook {
+    public PriceLevel buyTree;
+    public PriceLevel sellTree;
     PriceLevel ask;
     PriceLevel bid;
 
-    void addOrderToBuyTree(Order order) {
+    public OrderBook() {
+        this.buyTree = null;
+        this.sellTree = null;
+        this.ask = null;
+        this.bid = null;
+    } 
+    
+    @Override
+    public String toString() {
+        StringBuilder output = new StringBuilder();
+        output.append("Buy Tree: " + this.buyTree.toString() + "\n");
+        output.append("Sell Tree: " + this.sellTree.toString() + "\n");
+        return output.toString();
+    }
+
+    public void executeOrder(Order order) {
+
+    }
+
+    public void addOrderToBuyTree(Order order) {
         PriceLevel priceLevel = priceLevelExists(buyTree, order.limit);
         if (priceLevel == null) {
             PriceLevel newPriceLevel = new PriceLevel();
@@ -43,6 +62,10 @@ final class OrderBook {
     }
 
     void addPriceLevel(PriceLevel rootPriceLevel, PriceLevel newPriceLevel) {
+        if (rootPriceLevel == null) {
+            rootPriceLevel = newPriceLevel;
+        }
+
         if (newPriceLevel.priceLevel > rootPriceLevel.priceLevel) {
             if (rootPriceLevel.rightChild == null) {
                 rootPriceLevel.rightChild = newPriceLevel;
