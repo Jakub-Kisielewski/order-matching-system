@@ -15,6 +15,7 @@ public final class Order {
 	public Order(PriceLevel parentPriceLevel) {
 		this.idNumber = 0;
 		this.isBuy = true;
+		this.isMarketOrder = false;
 		this.shares = 10;
 		this.limit = 20;
 		this.entryTime = 0;
@@ -23,6 +24,20 @@ public final class Order {
 		this.prevOrder = null;
 		this.parentPriceLevel = parentPriceLevel;
 	}
+
+	static void freeOrderObject(Order order) {
+		order.idNumber = 0;
+		order.isBuy = true;
+		order.isMarketOrder = false;
+		order.shares = 10;
+		order.limit = 20;
+		order.entryTime = 0;
+		order.eventTime = 0;
+		order.nextOrder = null;
+		order.prevOrder = null;
+		order.parentPriceLevel = null;
+	}
+
 
 	@Override
 	public String toString() {

@@ -64,6 +64,17 @@ public final class PriceLevel {
 
     }
 
+    static void freePriceLevelObject(PriceLevel priceLevel) {
+        priceLevel.priceLevel = 0;
+        priceLevel.size = 0;
+        priceLevel.totalVolume = 0;
+        priceLevel.parent = null;
+        priceLevel.leftChild = null;
+        priceLevel.rightChild = null;
+        priceLevel.headOrder = null;
+        priceLevel.tailOrder = null;
+    }
+
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
