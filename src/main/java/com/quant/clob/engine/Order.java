@@ -29,8 +29,8 @@ public final class Order {
 		order.idNumber = 0;
 		order.isBuy = true;
 		order.isMarketOrder = false;
-		order.shares = 10;
-		order.limit = 20;
+		order.shares = 0;
+		order.limit = 0;
 		order.entryTime = 0;
 		order.eventTime = 0;
 		order.nextOrder = null;

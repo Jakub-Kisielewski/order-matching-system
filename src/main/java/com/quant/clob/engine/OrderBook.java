@@ -25,25 +25,29 @@ public final class OrderBook {
 
     }
 
-    public void addOrderToBuyTree(Order order) {
+    public PriceLevel addOrderToBuyTree(Order order) {
         PriceLevel priceLevel = priceLevelExists(buyTree, order.limit);
         if (priceLevel == null) {
             PriceLevel newPriceLevel = new PriceLevel();
             newPriceLevel.addOrder(order);
             addPriceLevel(buyTree, newPriceLevel);
+            return newPriceLevel;
         } else {
             priceLevel.addOrder(order);
+            return priceLevel;
         }
     }
 
-    void addOrderToSellTree(Order order) {
+    PriceLevel addOrderToSellTree(Order order) {
         PriceLevel priceLevel = priceLevelExists(sellTree, order.limit);
         if (priceLevel == null) {
             PriceLevel newPriceLevel = new PriceLevel();
             newPriceLevel.addOrder(order);
             addPriceLevel(buyTree, newPriceLevel);
+            return newPriceLevel;
         } else {
             priceLevel.addOrder(order);
+            return priceLevel;
         }
     }
 
