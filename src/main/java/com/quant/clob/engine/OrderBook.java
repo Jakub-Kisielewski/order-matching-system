@@ -80,4 +80,11 @@ public final class OrderBook {
             }
         }
     }
+
+    static void freeOrderBookObject(OrderBook orderBook) {
+        PriceLevel.freePriceLevelObject(orderBook.buyTree);
+        PriceLevel.freePriceLevelObject(orderBook.sellTree);
+        orderBook.ask = null;
+        orderBook.bid = null;
+    }
 }
