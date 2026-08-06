@@ -22,6 +22,30 @@ public final class OrderBook {
     }
 
     public void executeOrder(Order order) {
+        if (order.isBuy) {
+            while (order.shares > 0) {
+                if (ask == null) {
+                    addOrderToBuyTree(order);
+                    break;
+                }
+
+                ask.fillOrder(order);
+                if (order.shares > 0) {
+                    if (ask.rightChild == null) {
+                        ask = ask.parent;
+                        PriceLevel.freePriceLevelObject(ask.leftChild);
+                    } else {
+                        ask.rightChild.parent = ask.parent.parent;
+                        ask = ask.rightChild;
+
+                    }
+                }
+
+            }
+            // start filling order from lowestSell, then walk UP sell tree for worse prices
+        } else {
+            // start filling order from bestBuy, then walk down buy tree for worse prices
+        }
 
     }
 
@@ -31,6 +55,9 @@ public final class OrderBook {
             PriceLevel newPriceLevel = new PriceLevel();
             newPriceLevel.addOrder(order);
             addPriceLevel(buyTree, newPriceLevel);
+            if (newPriceLevel.priceLevel > bid.priceLevel) {
+                bid = newPriceLevel;
+            }
             return newPriceLevel;
         } else {
             priceLevel.addOrder(order);
@@ -44,6 +71,9 @@ public final class OrderBook {
             PriceLevel newPriceLevel = new PriceLevel();
             newPriceLevel.addOrder(order);
             addPriceLevel(buyTree, newPriceLevel);
+            if (newPriceLevel.priceLevel < ask.priceLevel) {
+                ask = newPriceLevel;
+            }
             return newPriceLevel;
         } else {
             priceLevel.addOrder(order);

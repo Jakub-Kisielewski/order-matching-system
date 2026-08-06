@@ -51,17 +51,24 @@ public final class PriceLevel {
         }
     }
 
-    void cancelOrder(Order order) {
-        order.prevOrder.nextOrder = order.nextOrder;
-        order.nextOrder.prevOrder = order.prevOrder;
-        order.nextOrder = null;
-        order.prevOrder = null;
-        size--;
-        totalVolume -= order.shares;
-    }
+    // only for market orders currently no limit orders
+    void fillOrder(Order order) {
+        while (order.shares > 0) {
+            if (headOrder == null) {
+                addOrder(order);
+                break;
+            }
 
-    void executeOrder(Order order) {
-
+            if (order.shares - headOrder.shares >= 0) {
+                order.shares -= headOrder.shares;
+                headOrder.nextOrder.prevOrder = null;
+                headOrder = headOrder.nextOrder;
+                Order.freeOrderObject(headOrder);
+            } else {
+                headOrder.shares -= order.shares;
+                break;
+            }
+        }
     }
 
     static void freePriceLevelObject(PriceLevel priceLevel) {
