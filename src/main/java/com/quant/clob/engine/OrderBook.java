@@ -1,16 +1,21 @@
 package com.quant.clob.engine;
 
+import java.util.Collections;
+import java.util.TreeMap;
+
 public final class OrderBook {
-    public PriceLevel buyTree;
-    public PriceLevel sellTree;
-    PriceLevel ask;
-    PriceLevel bid;
+    static TreeMap<Integer, PriceLevel> buyTree = new TreeMap<>(Collections.reverseOrder()); // descending for highest bid
+    static TreeMap<Integer, PriceLevel> sellTree = new TreeMap<>(); // ascending for lowest ask 
+    
+    PriceLevel getBestBid() {
+        return buyTree.isEmpty() ? null : buyTree.firstEntry().getValue();
+    }
+
+    PriceLevel getBestAsk() {
+        return sellTree.isEmpty() ? null : sellTree.firstEntry().getValue();
+    }
 
     public OrderBook() {
-        this.buyTree = null;
-        this.sellTree = null;
-        this.ask = null;
-        this.bid = null;
     } 
     
     @Override
@@ -21,24 +26,17 @@ public final class OrderBook {
         return output.toString();
     }
 
+    // only for market orders
     public void executeOrder(Order order) {
         if (order.isBuy) {
             while (order.shares > 0) {
-                if (ask == null) {
+                if (getBestAsk() == null) {
                     addOrderToBuyTree(order);
                     break;
                 }
 
-                ask.fillOrder(order);
+                getBestAsk().fillOrder(order);
                 if (order.shares > 0) {
-                    if (ask.rightChild == null) {
-                        ask = ask.parent;
-                        PriceLevel.freePriceLevelObject(ask.leftChild);
-                    } else {
-                        ask.rightChild.parent = ask.parent.parent;
-                        ask = ask.rightChild;
-
-                    }
                 }
 
             }
@@ -49,76 +47,30 @@ public final class OrderBook {
 
     }
 
-    public PriceLevel addOrderToBuyTree(Order order) {
-        PriceLevel priceLevel = priceLevelExists(buyTree, order.limit);
-        if (priceLevel == null) {
-            PriceLevel newPriceLevel = new PriceLevel();
-            newPriceLevel.addOrder(order);
-            addPriceLevel(buyTree, newPriceLevel);
-            if (newPriceLevel.priceLevel > bid.priceLevel) {
-                bid = newPriceLevel;
-            }
-            return newPriceLevel;
-        } else {
-            priceLevel.addOrder(order);
-            return priceLevel;
-        }
+    PriceLevel addOrderToBuyTree(Order order) {
+        PriceLevel level = buyTree.computeIfAbsent(order.limit, price -> {
+            PriceLevel newLevel = new PriceLevel();
+            newLevel.priceLevel = price;
+            return newLevel;
+        });
+        
+        level.addOrder(order);
+        return level;
     }
 
     PriceLevel addOrderToSellTree(Order order) {
-        PriceLevel priceLevel = priceLevelExists(sellTree, order.limit);
-        if (priceLevel == null) {
-            PriceLevel newPriceLevel = new PriceLevel();
-            newPriceLevel.addOrder(order);
-            addPriceLevel(buyTree, newPriceLevel);
-            if (newPriceLevel.priceLevel < ask.priceLevel) {
-                ask = newPriceLevel;
-            }
-            return newPriceLevel;
-        } else {
-            priceLevel.addOrder(order);
-            return priceLevel;
-        }
-    }
-
-    PriceLevel priceLevelExists(PriceLevel currentPriceLevel, int price) {
-        if (currentPriceLevel == null) {
-            return null;
-        }
-
-        if (price == currentPriceLevel.priceLevel) {
-            return currentPriceLevel;
-        } else if (price > currentPriceLevel.priceLevel) {
-            return priceLevelExists(currentPriceLevel.rightChild, price);
-        } else {
-            return priceLevelExists(currentPriceLevel.leftChild, price);
-        }
-    }
-
-    void addPriceLevel(PriceLevel rootPriceLevel, PriceLevel newPriceLevel) {
-        if (rootPriceLevel == null) {
-            rootPriceLevel = newPriceLevel;
-        }
-
-        if (newPriceLevel.priceLevel > rootPriceLevel.priceLevel) {
-            if (rootPriceLevel.rightChild == null) {
-                rootPriceLevel.rightChild = newPriceLevel;
-            } else {
-                addPriceLevel(rootPriceLevel.rightChild, newPriceLevel);
-            }
-        } else {
-            if (rootPriceLevel.leftChild == null) {
-                rootPriceLevel.leftChild = newPriceLevel;
-            } else {
-                addPriceLevel(rootPriceLevel.leftChild, newPriceLevel);
-            }
-        }
+        PriceLevel level = sellTree.computeIfAbsent(order.limit, price -> {
+            PriceLevel newLevel = new PriceLevel(); 
+            newLevel.priceLevel = price;
+            return newLevel;
+        });
+        
+        level.addOrder(order);
+        return level;
     }
 
     static void freeOrderBookObject(OrderBook orderBook) {
-        PriceLevel.freePriceLevelObject(orderBook.buyTree);
-        PriceLevel.freePriceLevelObject(orderBook.sellTree);
-        orderBook.ask = null;
-        orderBook.bid = null;
+        buyTree = null;
+        sellTree = null;
     }
 }

@@ -12,14 +12,14 @@ public class Main {
         PriceLevel sellTree = new PriceLevel();
         sellTree.priceLevel = 9;
         OrderBook orderBook = new OrderBook();
-        orderBook.buyTree = buyTree;
-        orderBook.sellTree = sellTree;
+        // orderBook.buyTree = buyTree;
+        // orderBook.sellTree = sellTree;
         System.out.println("Hello world!");
         System.out.println(orderBook.toString());
 
         Order order = new Order(buyTree);
         order.idNumber = 3;
-        orderBook.addOrderToBuyTree(order);
+        // orderBook.addOrderToBuyTree(order);
         System.out.println(orderBook.toString());
         System.out.println(order.toString());
         
