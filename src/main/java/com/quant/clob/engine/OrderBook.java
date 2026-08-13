@@ -36,15 +36,17 @@ public final class OrderBook {
                 }
 
                 getBestAsk().fillOrder(order);
-                if (order.shares > 0) {
+            }
+        } else {
+            while (order.shares > 0) {
+                if (getBestBid() == null) {
+                    addOrderToSellTree(order);
+                    break;
                 }
 
+                getBestBid().fillOrder(order);
             }
-            // start filling order from lowestSell, then walk UP sell tree for worse prices
-        } else {
-            // start filling order from bestBuy, then walk down buy tree for worse prices
         }
-
     }
 
     PriceLevel addOrderToBuyTree(Order order) {
