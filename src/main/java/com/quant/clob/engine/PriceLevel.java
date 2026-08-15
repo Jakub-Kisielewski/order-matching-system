@@ -61,11 +61,11 @@ public final class PriceLevel {
 
             if (order.shares - headOrder.shares >= 0) {
                 order.shares -= headOrder.shares;
-                headOrder.nextOrder.prevOrder = null;
                 headOrder = headOrder.nextOrder;
-                Order.freeOrderObject(headOrder);
+                Order.freeOrderObject(headOrder.prevOrder);
             } else {
                 headOrder.shares -= order.shares;
+                order.shares = 0;
                 break;
             }
         }
