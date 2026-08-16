@@ -1,5 +1,6 @@
 package com.quant.clob.engine;
 
+import java.util.List;
 import java.util.Map;
 
 public final class MatchingEngine {
@@ -7,6 +8,9 @@ public final class MatchingEngine {
   Map<Integer, Order> orders;
   Map<Integer, PriceLevel> buyPriceLevels;
   Map<Integer, PriceLevel> sellPriceLevels;
+  List<Order> orderPool;
+  List<PriceLevel> priceLevelPool;
+  
   OrderBook orderBook;
 
   public void init() {
@@ -50,5 +54,15 @@ public final class MatchingEngine {
       }
     }
     orders.put(order.idNumber, order);
+  }
+
+  public void freeOrderObject(Order order) {
+    Order.freeOrderObject(order);
+    orderPool.add(order);
+  }
+
+  public void freePriceLevelObject(PriceLevel priceLevel) {
+    PriceLevel.freePriceLevelObject(priceLevel);
+    priceLevelPool.add(priceLevel);
   }
 }
