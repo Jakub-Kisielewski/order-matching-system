@@ -21,18 +21,22 @@ public final class OrderBook {
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
-        output.append("Buy Tree: " + this.buyTree.toString() + "\n");
-        output.append("Sell Tree: " + this.sellTree.toString() + "\n");
+        output.append("Buy Tree: " + OrderBook.buyTree.toString() + "\n");
+        output.append("Sell Tree: " + OrderBook.sellTree.toString() + "\n");
         return output.toString();
     }
 
-    // only for market orders
-    public void executeOrder(Order order) {
+    public void executeMarketOrder(Order order) {
         if (order.isBuy) {
             while (order.shares > 0) {
                 if (getBestAsk() == null) {
                     addOrderToBuyTree(order);
                     break;
+                }
+
+                if (getBestAsk().isEmpty()) {
+                    PriceLevel removedPriceLevel = sellTree.remove(getBestAsk().priceLevel);
+                    PriceLevel.freePriceLevelObject(removedPriceLevel);
                 }
 
                 getBestAsk().fillOrder(order);
@@ -44,31 +48,80 @@ public final class OrderBook {
                     break;
                 }
 
+                if (getBestBid().isEmpty()) {
+                    PriceLevel removedPriceLevel = buyTree.remove(getBestBid().priceLevel);
+                    PriceLevel.freePriceLevelObject(removedPriceLevel);
+                }
+
                 getBestBid().fillOrder(order);
             }
         }
     }
 
+    void executeLimitOrder(Order order) {
+        if (order.isBuy) {
+            if (getBestAsk() == null) {
+                addOrderToBuyTree(order);
+            }
+
+            while (order.limit >= getBestAsk().priceLevel) {
+
+                if (getBestAsk().isEmpty()) {
+                    PriceLevel removedPriceLevel = sellTree.remove(getBestAsk().priceLevel);
+                    PriceLevel.freePriceLevelObject(removedPriceLevel);
+                }
+
+                if (order.shares == 0) {
+                    return;
+                }
+
+                getBestAsk().fillOrder(order);
+            }
+
+            addOrderToBuyTree(order);
+        } else {
+            if (getBestBid() == null) {
+                addOrderToSellTree(order);
+            }
+
+            while (order.limit >= getBestBid().priceLevel) {
+
+                if (getBestBid().isEmpty()) {
+                    PriceLevel removedPriceLevel = sellTree.remove(getBestBid().priceLevel);
+                    PriceLevel.freePriceLevelObject(removedPriceLevel);
+                }
+
+                if (order.shares == 0) {
+                    return;
+                }
+
+                getBestBid().fillOrder(order);
+            }
+
+            addOrderToSellTree(order);
+        }
+    }
+
     PriceLevel addOrderToBuyTree(Order order) {
-        PriceLevel level = buyTree.computeIfAbsent(order.limit, price -> {
-            PriceLevel newLevel = new PriceLevel();
-            newLevel.priceLevel = price;
-            return newLevel;
+        PriceLevel priceLevel = buyTree.computeIfAbsent(order.limit, price -> {
+            PriceLevel newPriceLevel = new PriceLevel();
+            newPriceLevel.priceLevel = price;
+            return newPriceLevel;
         });
         
-        level.addOrder(order);
-        return level;
+        priceLevel.addOrder(order);
+        return priceLevel;
     }
 
     PriceLevel addOrderToSellTree(Order order) {
-        PriceLevel level = sellTree.computeIfAbsent(order.limit, price -> {
+        PriceLevel priceLevel = sellTree.computeIfAbsent(order.limit, price -> {
             PriceLevel newLevel = new PriceLevel(); 
             newLevel.priceLevel = price;
             return newLevel;
         });
         
-        level.addOrder(order);
-        return level;
+        priceLevel.addOrder(order);
+        return priceLevel;
     }
 
     static void freeOrderBookObject(OrderBook orderBook) {

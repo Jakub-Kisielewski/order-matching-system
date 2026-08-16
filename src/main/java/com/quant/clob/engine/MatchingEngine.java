@@ -19,11 +19,9 @@ public final class MatchingEngine {
   
   public void removeOrder(Order order) {
     if (order.isBuy) {
-      buyPriceLevels.get(order.limit).size--;
-      buyPriceLevels.get(order.limit).totalVolume -= order.shares;
+      buyPriceLevels.get(order.limit).removeOrder(order);;
     } else {
-      sellPriceLevels.get(order.limit).size--;
-      sellPriceLevels.get(order.limit).totalVolume -= order.shares;
+      sellPriceLevels.get(order.limit).removeOrder(order);
     }
 
     Order.freeOrderObject(order);

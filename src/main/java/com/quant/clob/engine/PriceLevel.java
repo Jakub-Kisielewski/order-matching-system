@@ -51,20 +51,30 @@ public final class PriceLevel {
         }
     }
 
-    // only for market orders currently no limit orders
+    void removeOrder(Order order) {
+        if (order == headOrder) {
+            this.totalVolume -= headOrder.shares;
+            headOrder = headOrder.nextOrder;
+            Order.freeOrderObject(headOrder.prevOrder);
+        } else {
+            this.totalVolume -= order.shares;
+            Order.freeOrderObject(order);
+        }
+        this.size--;
+    }
+
     void fillOrder(Order order) {
         while (order.shares > 0) {
             if (headOrder == null) {
-                addOrder(order);
                 break;
             }
 
             if (order.shares - headOrder.shares >= 0) {
                 order.shares -= headOrder.shares;
-                headOrder = headOrder.nextOrder;
-                Order.freeOrderObject(headOrder.prevOrder);
+                removeOrder(headOrder);
             } else {
                 headOrder.shares -= order.shares;
+                this.totalVolume -= order.shares;
                 order.shares = 0;
                 break;
             }
@@ -101,6 +111,10 @@ public final class PriceLevel {
             output.add(currentOrder.idNumber);
             return orderIds(output, currentOrder.nextOrder);
         }
+    }
+
+    boolean isEmpty() {
+        return this.size == 0;
     }
 
 }
