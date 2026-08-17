@@ -3,7 +3,7 @@ package com.quant.clob.engine;
 import java.util.Collections;
 import java.util.TreeMap;
 
-public final class OrderBook {
+final class OrderBook {
     static TreeMap<Integer, PriceLevel> buyTree = new TreeMap<>(Collections.reverseOrder()); // descending for highest bid
     static TreeMap<Integer, PriceLevel> sellTree = new TreeMap<>(); // ascending for lowest ask 
     
@@ -15,7 +15,7 @@ public final class OrderBook {
         return sellTree.isEmpty() ? null : sellTree.firstEntry().getValue();
     }
 
-    public OrderBook() {
+    OrderBook() {
     } 
     
     @Override
@@ -26,12 +26,12 @@ public final class OrderBook {
         return output.toString();
     }
 
-    public void executeMarketOrder(Order order) {
+    // returns price level order added to
+    PriceLevel executeMarketOrder(Order order) {
         if (order.isBuy) {
             while (order.shares > 0) {
                 if (getBestAsk() == null) {
-                    addOrderToBuyTree(order);
-                    break;
+                    return addOrderToBuyTree(order);
                 }
 
                 if (getBestAsk().isEmpty()) {
@@ -44,8 +44,7 @@ public final class OrderBook {
         } else {
             while (order.shares > 0) {
                 if (getBestBid() == null) {
-                    addOrderToSellTree(order);
-                    break;
+                    return addOrderToSellTree(order);
                 }
 
                 if (getBestBid().isEmpty()) {
@@ -56,12 +55,13 @@ public final class OrderBook {
                 getBestBid().fillOrder(order);
             }
         }
+        return null;
     }
 
-    void executeLimitOrder(Order order) {
+    PriceLevel executeLimitOrder(Order order) {
         if (order.isBuy) {
             if (getBestAsk() == null) {
-                addOrderToBuyTree(order);
+                return addOrderToBuyTree(order);
             }
 
             while (order.limit >= getBestAsk().priceLevel) {
@@ -72,16 +72,16 @@ public final class OrderBook {
                 }
 
                 if (order.shares == 0) {
-                    return;
+                    return null;
                 }
 
                 getBestAsk().fillOrder(order);
             }
 
-            addOrderToBuyTree(order);
+            return addOrderToBuyTree(order);
         } else {
             if (getBestBid() == null) {
-                addOrderToSellTree(order);
+                return addOrderToSellTree(order);
             }
 
             while (order.limit >= getBestBid().priceLevel) {
@@ -92,13 +92,13 @@ public final class OrderBook {
                 }
 
                 if (order.shares == 0) {
-                    return;
+                    return null;
                 }
 
                 getBestBid().fillOrder(order);
             }
 
-            addOrderToSellTree(order);
+            return addOrderToSellTree(order);
         }
     }
 
