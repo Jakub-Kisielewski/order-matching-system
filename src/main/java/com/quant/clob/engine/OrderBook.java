@@ -34,12 +34,12 @@ final class OrderBook {
                     return addOrderToBuyTree(order);
                 }
 
+                getBestAsk().fillOrder(order);
+
                 if (getBestAsk().isEmpty()) {
                     PriceLevel removedPriceLevel = sellTree.remove(getBestAsk().priceLevel);
                     PriceLevel.freePriceLevelObject(removedPriceLevel);
                 }
-
-                getBestAsk().fillOrder(order);
             }
         } else {
             while (order.shares > 0) {
@@ -47,12 +47,12 @@ final class OrderBook {
                     return addOrderToSellTree(order);
                 }
 
+                getBestBid().fillOrder(order);
+
                 if (getBestBid().isEmpty()) {
                     PriceLevel removedPriceLevel = buyTree.remove(getBestBid().priceLevel);
                     PriceLevel.freePriceLevelObject(removedPriceLevel);
                 }
-
-                getBestBid().fillOrder(order);
             }
         }
         return null;
@@ -66,6 +66,8 @@ final class OrderBook {
 
             while (order.limit >= getBestAsk().priceLevel) {
 
+                getBestAsk().fillOrder(order);
+
                 if (getBestAsk().isEmpty()) {
                     PriceLevel removedPriceLevel = sellTree.remove(getBestAsk().priceLevel);
                     PriceLevel.freePriceLevelObject(removedPriceLevel);
@@ -74,8 +76,10 @@ final class OrderBook {
                 if (order.shares == 0) {
                     return null;
                 }
-
-                getBestAsk().fillOrder(order);
+                
+                if (sellTree.isEmpty()) {
+                    break;
+                }
             }
 
             return addOrderToBuyTree(order);
@@ -84,7 +88,9 @@ final class OrderBook {
                 return addOrderToSellTree(order);
             }
 
-            while (order.limit >= getBestBid().priceLevel) {
+            while (order.limit <= getBestBid().priceLevel) {
+
+                getBestBid().fillOrder(order);
 
                 if (getBestBid().isEmpty()) {
                     PriceLevel removedPriceLevel = sellTree.remove(getBestBid().priceLevel);
@@ -95,7 +101,9 @@ final class OrderBook {
                     return null;
                 }
 
-                getBestBid().fillOrder(order);
+                if (buyTree.isEmpty()) {
+                    break;
+                }
             }
 
             return addOrderToSellTree(order);
