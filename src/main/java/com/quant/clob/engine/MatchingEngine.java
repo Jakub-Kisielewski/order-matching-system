@@ -21,38 +21,35 @@ public final class MatchingEngine {
 
   }
   
-  public void removeOrder(Order order) {
+  public void cancelOrder(Order order) {
     if (order.isBuy) {
       buyPriceLevels.get(order.limit).removeOrder(order);;
     } else {
       sellPriceLevels.get(order.limit).removeOrder(order);
     }
 
+    orders.remove(order.idNumber);
     Order.freeOrderObject(order);
   }
   
   public void addOrder(Order order) {
-    PriceLevel priceLevel;
-    if (order.isBuy) {
-      priceLevel = buyPriceLevels.get(order.limit);
-
-      if (priceLevel != null) {
-        priceLevel.addOrder(order);
-      } else {
-        priceLevel = orderBook.addOrderToBuyTree(order);
-        buyPriceLevels.put(priceLevel.priceLevel, priceLevel);
-      }
-
+    PriceLevel priceLevelOrderAddedTo;
+    if (order.isMarketOrder) {
+      priceLevelOrderAddedTo = orderBook.executeMarketOrder(order);
     } else {
-      priceLevel = sellPriceLevels.get(order.limit);
-
-      if (priceLevel != null) {
-        priceLevel.addOrder(order);
-      } else {
-        priceLevel = orderBook.addOrderToSellTree(order);
-        sellPriceLevels.put(priceLevel.priceLevel, priceLevel);
-      }
+      priceLevelOrderAddedTo = orderBook.executeLimitOrder(order);
     }
+
+    if (priceLevelOrderAddedTo == null) {
+      return;
+    }
+
+    if (order.isBuy && !(buyPriceLevels.containsKey(priceLevelOrderAddedTo.priceLevel))) {
+      buyPriceLevels.put(priceLevelOrderAddedTo.priceLevel, priceLevelOrderAddedTo);
+    } else if (!(order.isBuy) && !(sellPriceLevels.containsKey(priceLevelOrderAddedTo.priceLevel))) {
+      sellPriceLevels.put(priceLevelOrderAddedTo.priceLevel, priceLevelOrderAddedTo);
+    }
+
     orders.put(order.idNumber, order);
   }
 
