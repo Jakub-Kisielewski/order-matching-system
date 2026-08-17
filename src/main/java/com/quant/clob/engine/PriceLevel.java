@@ -20,11 +20,11 @@ final class PriceLevel {
         order.parentPriceLevel = this;
         if (this.isEmpty()) {
             this.headOrder = order;
-            this.headOrder.nextOrder = tailOrder;
         } else {
             if (this.size == 1) {
                 this.tailOrder = order;
                 this.tailOrder.prevOrder = headOrder;
+                this.headOrder.nextOrder = this.tailOrder;
             } else {
                 this.tailOrder.nextOrder = order;
                 order.prevOrder = this.tailOrder;
@@ -36,11 +36,22 @@ final class PriceLevel {
     }
 
     void removeOrder(Order order) {
-        if (order == headOrder) {
+        if (this.size == 1) {
+            Order.freeOrderObject(order);
+            PriceLevel.freePriceLevelObject(this);
+            return;
+        }
+
+        if (order == this.headOrder) {
             this.totalVolume -= headOrder.shares;
             headOrder = headOrder.nextOrder;
             Order.freeOrderObject(headOrder.prevOrder);
             headOrder.prevOrder = null;
+        } else if (order == this.tailOrder) {
+            this.totalVolume -= tailOrder.shares;
+            order.prevOrder.nextOrder = null;
+            this.tailOrder = order.prevOrder;
+            Order.freeOrderObject(order);
         } else {
             this.totalVolume -= order.shares;
             order.prevOrder.nextOrder = order.nextOrder;
