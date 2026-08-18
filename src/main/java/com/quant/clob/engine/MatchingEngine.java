@@ -1,19 +1,20 @@
 package com.quant.clob.engine;
 
-import java.util.List;
 import java.util.Map;
 
 public final class MatchingEngine {
 
-  Map<Integer, Order> orders;
-  Map<Integer, PriceLevel> buyPriceLevels;
-  Map<Integer, PriceLevel> sellPriceLevels;
-  Order[] orderPool;
-  int currentFreeOrderIndex = 0;
-  PriceLevel[] priceLevelPool;
-  int currentFreePriceLevelIndex = 0;
+  static Map<Integer, Order> orders;
+  static Map<Integer, PriceLevel> buyPriceLevels;
+  static Map<Integer, PriceLevel> sellPriceLevels;
+  static Order[] orderPool;
+  static int currentFreeOrderIndex = 0;
+  static PriceLevel[] priceLevelPool;
+  static int currentFreePriceLevelIndex = 0;
   
-  OrderBook orderBook;
+  static OrderBook orderBook;
+
+  static int assetIPOReferencePrice = 0; // change once decide what asset to trade
 
   public void init() {
 
@@ -68,7 +69,7 @@ public final class MatchingEngine {
     orders.put(order.idNumber, order);
   }
 
-  public void freeOrderObject(Order order) {
+  public static void freeOrderObject(Order order) {
     Order.freeOrderObject(order);
     if (orderPool[currentFreeOrderIndex] == null) {
       orderPool[currentFreeOrderIndex] = order;
@@ -77,7 +78,7 @@ public final class MatchingEngine {
     }
   }
 
-  public void freePriceLevelObject(PriceLevel priceLevel) {
+  public static void freePriceLevelObject(PriceLevel priceLevel) {
     PriceLevel.freePriceLevelObject(priceLevel);
     if (priceLevelPool[currentFreePriceLevelIndex] == null) {
       priceLevelPool[currentFreePriceLevelIndex] = priceLevel;
