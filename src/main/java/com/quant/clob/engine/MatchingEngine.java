@@ -8,8 +8,10 @@ public final class MatchingEngine {
   Map<Integer, Order> orders;
   Map<Integer, PriceLevel> buyPriceLevels;
   Map<Integer, PriceLevel> sellPriceLevels;
-  List<Order> orderPool;
-  List<PriceLevel> priceLevelPool;
+  Order[] orderPool;
+  int currentFreeOrderIndex = 0;
+  PriceLevel[] priceLevelPool;
+  int currentFreePriceLevelIndex = 0;
   
   OrderBook orderBook;
 
@@ -22,14 +24,27 @@ public final class MatchingEngine {
   }
   
   public void cancelOrder(Order order) {
+    PriceLevel priceLevel;
     if (order.isBuy) {
-      buyPriceLevels.get(order.limit).removeOrder(order);;
+      priceLevel = buyPriceLevels.get(order.limit);
+      priceLevel.removeOrder(order);
+      if (priceLevel.isEmpty()) {
+        buyPriceLevels.remove(priceLevel.priceLevel);
+        OrderBook.buyTree.remove(priceLevel.priceLevel);
+        freePriceLevelObject(priceLevel);
+      }
     } else {
-      sellPriceLevels.get(order.limit).removeOrder(order);
+      priceLevel = sellPriceLevels.get(order.limit);
+      priceLevel.removeOrder(order);
+      if (priceLevel.isEmpty()) {
+        sellPriceLevels.remove(priceLevel.priceLevel);
+        OrderBook.sellTree.remove(priceLevel.priceLevel);
+        freePriceLevelObject(priceLevel);
+      }
     }
 
     orders.remove(order.idNumber);
-    Order.freeOrderObject(order);
+    freeOrderObject(order);
   }
   
   public void addOrder(Order order) {
@@ -55,11 +70,19 @@ public final class MatchingEngine {
 
   public void freeOrderObject(Order order) {
     Order.freeOrderObject(order);
-    orderPool.add(order);
+    if (orderPool[currentFreeOrderIndex] == null) {
+      orderPool[currentFreeOrderIndex] = order;
+    } else {
+      orderPool[++currentFreeOrderIndex] = order;
+    }
   }
 
   public void freePriceLevelObject(PriceLevel priceLevel) {
     PriceLevel.freePriceLevelObject(priceLevel);
-    priceLevelPool.add(priceLevel);
+    if (priceLevelPool[currentFreePriceLevelIndex] == null) {
+      priceLevelPool[currentFreePriceLevelIndex] = priceLevel;
+    } else {
+      priceLevelPool[++currentFreePriceLevelIndex] = priceLevel;
+    }
   }
 }
