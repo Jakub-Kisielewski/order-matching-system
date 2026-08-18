@@ -37,7 +37,7 @@ final class PriceLevel {
 
     void removeOrder(Order order) {
         if (this.size == 1) {
-            Order.freeOrderObject(order);
+            MatchingEngine.freeOrderObject(order);
             PriceLevel.freePriceLevelObject(this);
             return;
         }
@@ -45,18 +45,18 @@ final class PriceLevel {
         if (order == this.headOrder) {
             this.totalVolume -= headOrder.shares;
             headOrder = headOrder.nextOrder;
-            Order.freeOrderObject(headOrder.prevOrder);
+            MatchingEngine.freeOrderObject(headOrder.prevOrder);
             headOrder.prevOrder = null;
         } else if (order == this.tailOrder) {
             this.totalVolume -= tailOrder.shares;
             order.prevOrder.nextOrder = null;
             this.tailOrder = order.prevOrder;
-            Order.freeOrderObject(order);
+            MatchingEngine.freeOrderObject(order);
         } else {
             this.totalVolume -= order.shares;
             order.prevOrder.nextOrder = order.nextOrder;
             order.nextOrder.prevOrder = order.prevOrder;
-            Order.freeOrderObject(order);
+            MatchingEngine.freeOrderObject(order);
         }
         this.size--;
     }
