@@ -23,8 +23,8 @@ Disruptor (TODO)
 Matching Engine 
 Infomation Capture (TODO)
 
+## Project File Structure
 ```
-Project File Structure
 clob-matching-engine/
 ├── .gitignore
 ├── README.md
