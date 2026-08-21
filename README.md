@@ -16,12 +16,12 @@ engine and postgres thread consume their respective data from.
 
 ```
 ## Feature Set
-Netty TCP Server (TODO)
-FIX Framer (TODO)
-Custom FIX Parser (TODO)
-Disruptor (TODO)
-Matching Engine 
-Infomation Capture (TODO)
+- Netty TCP Server (TODO)
+- FIX Framer (TODO)
+- Custom FIX Parser (TODO)
+- Disruptor (TODO)
+- Matching Engine 
+- Infomation Capture (TODO)
 
 ## Project File Structure
 ```
