@@ -37,8 +37,7 @@ final class PriceLevel {
 
     void removeOrder(Order order) {
         if (this.size == 1) {
-            MatchingEngine.freeOrderObject(order);
-            PriceLevel.freePriceLevelObject(this);
+            size--;
             return;
         }
 

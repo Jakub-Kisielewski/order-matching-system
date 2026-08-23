@@ -30,7 +30,6 @@ public final class MatchingEngine {
       priceLevel = buyPriceLevels.get(order.limit);
       priceLevel.removeOrder(order);
       if (priceLevel.isEmpty()) {
-        buyPriceLevels.remove(priceLevel.priceLevel);
         OrderBook.buyTree.remove(priceLevel.priceLevel);
         freePriceLevelObject(priceLevel);
       }
@@ -38,7 +37,6 @@ public final class MatchingEngine {
       priceLevel = sellPriceLevels.get(order.limit);
       priceLevel.removeOrder(order);
       if (priceLevel.isEmpty()) {
-        sellPriceLevels.remove(priceLevel.priceLevel);
         OrderBook.sellTree.remove(priceLevel.priceLevel);
         freePriceLevelObject(priceLevel);
       }
