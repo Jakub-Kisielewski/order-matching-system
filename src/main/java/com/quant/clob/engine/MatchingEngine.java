@@ -57,6 +57,7 @@ public final class MatchingEngine {
     }
 
     if (priceLevelOrderAddedTo == null) {
+      freeOrderObject(order);
       return;
     }
 
@@ -79,6 +80,12 @@ public final class MatchingEngine {
   }
 
   public static void freePriceLevelObject(PriceLevel priceLevel) {
+    if (buyPriceLevels.containsKey(priceLevel.priceLevel)) {
+      buyPriceLevels.remove(priceLevel.priceLevel);
+    } else {
+      sellPriceLevels.remove(priceLevel.priceLevel);
+    }
+
     PriceLevel.freePriceLevelObject(priceLevel);
     if (priceLevelPool[currentFreePriceLevelIndex] == null) {
       priceLevelPool[currentFreePriceLevelIndex] = priceLevel;

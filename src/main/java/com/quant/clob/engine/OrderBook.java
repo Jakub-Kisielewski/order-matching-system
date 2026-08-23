@@ -29,36 +29,31 @@ final class OrderBook {
     // returns price level order added to
     // converts unfulfilled market order to limit order
     PriceLevel executeMarketOrder(Order order) {
-        int lastMatchedPrice = 0;
         if (order.isBuy) {
             while (order.shares > 0) {
-                if (getBestAsk() == null) {
-                    order.isMarketOrder = false;
-                    order.limit = lastMatchedPrice == 0 ? MatchingEngine.assetIPOReferencePrice : lastMatchedPrice;
-                    return addOrderToBuyTree(order);
+                PriceLevel currentBestAsk = getBestAsk();
+                if (currentBestAsk == null) {
+                    return null;
                 }
 
-                getBestAsk().fillOrder(order);
-                lastMatchedPrice = getBestAsk().priceLevel;
+                currentBestAsk.fillOrder(order);
 
-                if (getBestAsk().isEmpty()) {
-                    PriceLevel removedPriceLevel = sellTree.remove(getBestAsk().priceLevel);
+                if (currentBestAsk.isEmpty()) {
+                    PriceLevel removedPriceLevel = sellTree.remove(currentBestAsk.priceLevel);
                     MatchingEngine.freePriceLevelObject(removedPriceLevel);
                 }
             }
         } else {
             while (order.shares > 0) {
-                if (getBestBid() == null) {
-                    order.isMarketOrder = false;
-                    order.limit = lastMatchedPrice;
-                    return addOrderToSellTree(order);
+                PriceLevel currentBestBid = getBestBid();
+                if (currentBestBid == null) {
+                    return null;
                 }
 
-                getBestBid().fillOrder(order);
-                lastMatchedPrice = getBestBid().priceLevel;
+                currentBestBid.fillOrder(order);
 
-                if (getBestBid().isEmpty()) {
-                    PriceLevel removedPriceLevel = buyTree.remove(getBestBid().priceLevel);
+                if (currentBestBid.isEmpty()) {
+                    PriceLevel removedPriceLevel = buyTree.remove(currentBestBid.priceLevel);
                     MatchingEngine.freePriceLevelObject(removedPriceLevel);
                 }
             }
@@ -73,11 +68,12 @@ final class OrderBook {
             }
 
             while (order.limit >= getBestAsk().priceLevel) {
+                PriceLevel currentBestAsk = getBestAsk();
 
-                getBestAsk().fillOrder(order);
+                currentBestAsk.fillOrder(order);
 
-                if (getBestAsk().isEmpty()) {
-                    PriceLevel removedPriceLevel = sellTree.remove(getBestAsk().priceLevel);
+                if (currentBestAsk.isEmpty()) {
+                    PriceLevel removedPriceLevel = sellTree.remove(currentBestAsk.priceLevel);
                     MatchingEngine.freePriceLevelObject(removedPriceLevel);
                 }
 
@@ -97,11 +93,12 @@ final class OrderBook {
             }
 
             while (order.limit <= getBestBid().priceLevel) {
+                PriceLevel currentBestBid = getBestBid();
 
-                getBestBid().fillOrder(order);
+                currentBestBid.fillOrder(order);
 
-                if (getBestBid().isEmpty()) {
-                    PriceLevel removedPriceLevel = buyTree.remove(getBestBid().priceLevel);
+                if (currentBestBid.isEmpty()) {
+                    PriceLevel removedPriceLevel = buyTree.remove(currentBestBid.priceLevel);
                     MatchingEngine.freePriceLevelObject(removedPriceLevel);
                 }
 
@@ -141,7 +138,7 @@ final class OrderBook {
     }
 
     static void freeOrderBookObject(OrderBook orderBook) {
-        buyTree = null;
-        sellTree = null;
+        buyTree.clear();
+        sellTree.clear();
     }
 }
