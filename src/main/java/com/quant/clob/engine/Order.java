@@ -12,7 +12,17 @@ final class Order {
 	Order prevOrder;
 	PriceLevel parentPriceLevel;
 
-	Order(PriceLevel parentPriceLevel) {
+	Order() {
+		this.idNumber = 0;
+		this.isBuy = false;
+		this.isMarketOrder = false;
+		this.shares = 0;
+		this.limit = 0;
+		this.entryTime = 0;
+		this.eventTime = 0;
+		this.nextOrder = null;
+		this.prevOrder = null;
+		parentPriceLevel = null;
 	}
 
 	static void freeOrderObject(Order order) {
