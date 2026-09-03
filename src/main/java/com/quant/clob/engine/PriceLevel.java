@@ -7,13 +7,15 @@ final class PriceLevel {
     int priceLevel = 0;
     int size = 0;
     int totalVolume = 0;
-    PriceLevel parent;
-    PriceLevel leftChild;
-    PriceLevel rightChild;
     Order headOrder; // oldest order
     Order tailOrder; // newest order
 
     PriceLevel() {
+        this.priceLevel = 10;
+        this.size = 0;
+        this.totalVolume = 0;
+        this.headOrder = null;
+        this.tailOrder = null;
     }
 
     void addOrder(Order order) {
@@ -37,7 +39,7 @@ final class PriceLevel {
 
     void removeOrder(Order order) {
         if (this.size == 1) {
-            size--;
+            this.size--;
             return;
         }
 
@@ -82,9 +84,6 @@ final class PriceLevel {
         priceLevel.priceLevel = 0;
         priceLevel.size = 0;
         priceLevel.totalVolume = 0;
-        priceLevel.parent = null;
-        priceLevel.leftChild = null;
-        priceLevel.rightChild = null;
         priceLevel.headOrder = null;
         priceLevel.tailOrder = null;
     }
