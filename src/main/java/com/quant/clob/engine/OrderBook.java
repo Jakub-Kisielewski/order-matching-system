@@ -27,7 +27,7 @@ final class OrderBook {
     }
 
     // returns price level order added to
-    // converts unfulfilled market order to limit order
+    // removes unfulfilled market orders 
     PriceLevel executeMarketOrder(Order order) {
         if (order.isBuy) {
             while (order.shares > 0) {

@@ -1,5 +1,5 @@
 package com.quant.clob.engine;
 
-class OrderBookTest {
+final class OrderBookTest {
 
 }

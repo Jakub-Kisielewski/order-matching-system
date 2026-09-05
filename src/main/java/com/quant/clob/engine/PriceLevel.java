@@ -46,18 +46,15 @@ final class PriceLevel {
         if (order == this.headOrder) {
             this.totalVolume -= headOrder.shares;
             headOrder = headOrder.nextOrder;
-            MatchingEngine.freeOrderObject(headOrder.prevOrder);
             headOrder.prevOrder = null;
         } else if (order == this.tailOrder) {
             this.totalVolume -= tailOrder.shares;
             order.prevOrder.nextOrder = null;
             this.tailOrder = order.prevOrder;
-            MatchingEngine.freeOrderObject(order);
         } else {
             this.totalVolume -= order.shares;
             order.prevOrder.nextOrder = order.nextOrder;
             order.nextOrder.prevOrder = order.prevOrder;
-            MatchingEngine.freeOrderObject(order);
         }
         this.size--;
     }

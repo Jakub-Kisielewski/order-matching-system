@@ -1,5 +1,6 @@
 package com.quant.clob.engine;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public final class MatchingEngine {
@@ -8,16 +9,24 @@ public final class MatchingEngine {
   static Map<Integer, PriceLevel> buyPriceLevels;
   static Map<Integer, PriceLevel> sellPriceLevels;
   static Order[] orderPool;
-  static int currentFreeOrderIndex = 0;
+  static int currentFreeOrderIndex;
   static PriceLevel[] priceLevelPool;
-  static int currentFreePriceLevelIndex = 0;
+  static int currentFreePriceLevelIndex;
   
   static OrderBook orderBook;
 
-  static int assetIPOReferencePrice = 0; // change once decide what asset to trade
+  static int assetIPOReferencePrice; // change once decide what asset to trade
 
-  public void init() {
-
+  MatchingEngine() {
+    orders = new HashMap<>();
+    buyPriceLevels = new HashMap<>();
+    sellPriceLevels = new HashMap<>();
+    orderPool = new Order[50];
+    currentFreeOrderIndex = 0;
+    priceLevelPool = new PriceLevel[50];
+    currentFreePriceLevelIndex = 0;
+    orderBook = new OrderBook();
+    assetIPOReferencePrice = 0;
   }
 
   public void seedOrderBook() {
