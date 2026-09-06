@@ -38,15 +38,12 @@ final class PriceLevel {
     }
 
     void removeOrder(Order order) {
-        if (this.size == 1) {
-            this.size--;
-            return;
-        }
-
         if (order == this.headOrder) {
             this.totalVolume -= headOrder.shares;
             headOrder = headOrder.nextOrder;
-            headOrder.prevOrder = null;
+            if (headOrder != null) {
+                headOrder.prevOrder = null;
+            }
         } else if (order == this.tailOrder) {
             this.totalVolume -= tailOrder.shares;
             order.prevOrder.nextOrder = null;
