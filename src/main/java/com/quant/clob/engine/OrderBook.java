@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.TreeMap;
 
 final class OrderBook {
-    static TreeMap<Integer, PriceLevel> buyTree = new TreeMap<>(Collections.reverseOrder()); // descending for highest bid
-    static TreeMap<Integer, PriceLevel> sellTree = new TreeMap<>(); // ascending for lowest ask 
+    static TreeMap<Integer, PriceLevel> buyTree; // descending for highest bid
+    static TreeMap<Integer, PriceLevel> sellTree; // ascending for lowest ask 
     
     PriceLevel getBestBid() {
         return buyTree.isEmpty() ? null : buyTree.firstEntry().getValue();
@@ -16,6 +16,8 @@ final class OrderBook {
     }
 
     OrderBook() {
+        buyTree = new TreeMap<>(Collections.reverseOrder());
+        sellTree = new TreeMap<>();
     } 
     
     @Override
@@ -40,7 +42,7 @@ final class OrderBook {
 
                 if (currentBestAsk.isEmpty()) {
                     PriceLevel removedPriceLevel = sellTree.remove(currentBestAsk.priceLevel);
-                    MatchingEngine.freePriceLevelObject(removedPriceLevel);
+                    MatchingEngine.freePriceLevelObject(removedPriceLevel); // think about removing this from here
                 }
             }
         } else {
