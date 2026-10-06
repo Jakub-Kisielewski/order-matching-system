@@ -36,14 +36,14 @@ public final class MatchingEngine {
   public void cancelOrder(Order order) {
     PriceLevel priceLevel;
     if (order.isBuy) {
-      priceLevel = buyPriceLevels.get(order.limit);
+      priceLevel = buyPriceLevels.get(order.price);
       priceLevel.removeOrder(order);
       if (priceLevel.isEmpty()) {
         OrderBook.buyTree.remove(priceLevel.priceLevel);
         freePriceLevelObject(priceLevel);
       }
     } else {
-      priceLevel = sellPriceLevels.get(order.limit);
+      priceLevel = sellPriceLevels.get(order.price);
       priceLevel.removeOrder(order);
       if (priceLevel.isEmpty()) {
         OrderBook.sellTree.remove(priceLevel.priceLevel);

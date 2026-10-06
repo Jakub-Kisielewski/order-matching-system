@@ -10,10 +10,10 @@ final class OrderBookTest {
   void addOrderToBuyTree_Success() {
     OrderBook orderBook = new OrderBook();
     Order order = new Order();
-    order.limit = 10;
+    order.price = 10;
     order.isBuy = true;
     PriceLevel addedToPriceLevel = orderBook.addOrderToBuyTree(order);
-    assertEquals(order.limit, addedToPriceLevel.priceLevel);
+    assertEquals(order.price, addedToPriceLevel.priceLevel);
     assertEquals(1, OrderBook.buyTree.size());
     assertEquals(1, addedToPriceLevel.size);
   }
@@ -22,14 +22,14 @@ final class OrderBookTest {
   void addOrderToBuyTree_MultiOrder_Success() {
     OrderBook orderBook = new OrderBook();
     Order order = new Order();
-    order.limit = 10;
+    order.price = 10;
     order.isBuy = true;
     Order order2 = new Order();
-    order2.limit = 10;
+    order2.price = 10;
     order.isBuy = true;
     orderBook.addOrderToBuyTree(order);
     PriceLevel addedToPriceLevel = orderBook.addOrderToBuyTree(order2);
-    assertEquals(order2.limit, addedToPriceLevel.priceLevel);
+    assertEquals(order2.price, addedToPriceLevel.priceLevel);
     assertEquals(1, OrderBook.buyTree.size());
     assertEquals(2, addedToPriceLevel.size);
   }
@@ -38,10 +38,10 @@ final class OrderBookTest {
   void addOrderToSellTree_Success() {
     OrderBook orderBook = new OrderBook();
     Order order = new Order();
-    order.limit = 10;
+    order.price = 10;
     order.isBuy = false;
     PriceLevel addedToPriceLevel = orderBook.addOrderToSellTree(order);
-    assertEquals(order.limit, addedToPriceLevel.priceLevel);
+    assertEquals(order.price, addedToPriceLevel.priceLevel);
     assertEquals(1, OrderBook.sellTree.size());
     assertEquals(1, addedToPriceLevel.size);
   }
@@ -50,14 +50,14 @@ final class OrderBookTest {
   void addOrderToSellTree_MultiOrder_Success() {
     OrderBook orderBook = new OrderBook();
     Order order = new Order();
-    order.limit = 10;
+    order.price = 10;
     order.isBuy = false;
     Order order2 = new Order();
-    order2.limit = 10;
+    order2.price = 10;
     order.isBuy = false;
     orderBook.addOrderToSellTree(order);
     PriceLevel addedToPriceLevel = orderBook.addOrderToSellTree(order2);
-    assertEquals(order2.limit, addedToPriceLevel.priceLevel);
+    assertEquals(order2.price, addedToPriceLevel.priceLevel);
     assertEquals(1, OrderBook.sellTree.size());
     assertEquals(2, addedToPriceLevel.size);
   }
@@ -67,12 +67,12 @@ final class OrderBookTest {
     MatchingEngine matchingEngine = new MatchingEngine(); // to satisfy test
     OrderBook orderBook = new OrderBook();
     Order order = new Order();
-    order.limit = 10;
+    order.price = 10;
     order.isBuy = false;
     order.shares = 10;
     orderBook.addOrderToSellTree(order);
     Order orderToFill = new Order();
-    orderToFill.limit = 10;
+    orderToFill.price = 10;
     orderToFill.isBuy = true;
     orderToFill.shares = 10;
     orderToFill.isMarketOrder = true;
@@ -86,12 +86,12 @@ final class OrderBookTest {
     MatchingEngine matchingEngine = new MatchingEngine();
     OrderBook orderBook = new OrderBook();
     Order order = new Order();
-    order.limit = 10;
+    order.price = 10;
     order.isBuy = false;
     order.shares = 10;
     orderBook.addOrderToSellTree(order);
     Order orderToFill = new Order();
-    orderToFill.limit = 10;
+    orderToFill.price = 10;
     orderToFill.isBuy = true;
     orderToFill.shares = 10;
     orderToFill.isMarketOrder = false;
@@ -105,12 +105,12 @@ final class OrderBookTest {
     MatchingEngine matchingEngine = new MatchingEngine();
     OrderBook orderBook = new OrderBook();
     Order order = new Order();
-    order.limit = 10;
+    order.price = 10;
     order.isBuy = false;
     order.shares = 10;
     orderBook.addOrderToSellTree(order);
     Order orderToFill = new Order();
-    orderToFill.limit = 5;
+    orderToFill.price = 5;
     orderToFill.isBuy = true;
     orderToFill.shares = 10;
     orderToFill.isMarketOrder = false;

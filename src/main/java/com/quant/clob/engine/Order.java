@@ -5,7 +5,7 @@ final class Order {
 	boolean isBuy;
 	boolean isMarketOrder; // market order fills volume completely, limit order fills up to limit and is then added to tree
 	int shares;
-	int limit;
+	int price;
 	int entryTime; // time order entered book
 	int eventTime; // timestamp for most recent update to order
 	Order nextOrder;
@@ -17,7 +17,7 @@ final class Order {
 		this.isBuy = false;
 		this.isMarketOrder = false;
 		this.shares = 0;
-		this.limit = 0;
+		this.price = 0;
 		this.entryTime = 0;
 		this.eventTime = 0;
 		this.nextOrder = null;
@@ -30,7 +30,7 @@ final class Order {
 		order.isBuy = true;
 		order.isMarketOrder = false;
 		order.shares = 0;
-		order.limit = 0;
+		order.price = 0;
 		order.entryTime = 0;
 		order.eventTime = 0;
 		order.nextOrder = null;

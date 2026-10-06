@@ -69,7 +69,7 @@ final class OrderBook {
                 return addOrderToBuyTree(order);
             }
 
-            while (order.limit >= getBestAsk().priceLevel) {
+            while (order.price >= getBestAsk().priceLevel) {
                 PriceLevel currentBestAsk = getBestAsk();
 
                 currentBestAsk.fillOrder(order);
@@ -94,7 +94,7 @@ final class OrderBook {
                 return addOrderToSellTree(order);
             }
 
-            while (order.limit <= getBestBid().priceLevel) {
+            while (order.price <= getBestBid().priceLevel) {
                 PriceLevel currentBestBid = getBestBid();
 
                 currentBestBid.fillOrder(order);
@@ -118,7 +118,7 @@ final class OrderBook {
     }
 
     PriceLevel addOrderToBuyTree(Order order) {
-        PriceLevel priceLevel = buyTree.computeIfAbsent(order.limit, price -> {
+        PriceLevel priceLevel = buyTree.computeIfAbsent(order.price, price -> {
             PriceLevel newPriceLevel = new PriceLevel();
             newPriceLevel.priceLevel = price;
             return newPriceLevel;
@@ -129,7 +129,7 @@ final class OrderBook {
     }
 
     PriceLevel addOrderToSellTree(Order order) {
-        PriceLevel priceLevel = sellTree.computeIfAbsent(order.limit, price -> {
+        PriceLevel priceLevel = sellTree.computeIfAbsent(order.price, price -> {
             PriceLevel newLevel = new PriceLevel(); 
             newLevel.priceLevel = price;
             return newLevel;
