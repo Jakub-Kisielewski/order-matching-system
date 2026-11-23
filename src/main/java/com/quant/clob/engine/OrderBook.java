@@ -119,7 +119,7 @@ final class OrderBook {
 
     PriceLevel addOrderToBuyTree(Order order) {
         PriceLevel priceLevel = buyTree.computeIfAbsent(order.price, price -> {
-            PriceLevel newPriceLevel = new PriceLevel();
+            PriceLevel newPriceLevel = MatchingEngine.getNewPriceLevel();
             newPriceLevel.priceLevel = price;
             return newPriceLevel;
         });
@@ -130,9 +130,9 @@ final class OrderBook {
 
     PriceLevel addOrderToSellTree(Order order) {
         PriceLevel priceLevel = sellTree.computeIfAbsent(order.price, price -> {
-            PriceLevel newLevel = new PriceLevel(); 
-            newLevel.priceLevel = price;
-            return newLevel;
+            PriceLevel newPriceLevel = MatchingEngine.getNewPriceLevel(); 
+            newPriceLevel.priceLevel = price;
+            return newPriceLevel;
         });
         
         priceLevel.addOrder(order);

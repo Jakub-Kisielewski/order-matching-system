@@ -32,7 +32,7 @@ public final class MatchingEngine {
   public void seedOrderBook() {
 
   }
-  
+
   public void cancelOrder(Order order) {
     PriceLevel priceLevel;
     if (order.isBuy) {
@@ -78,6 +78,7 @@ public final class MatchingEngine {
   }
 
   public static void freeOrderObject(Order order) {
+    orders.remove(order.idNumber);
     Order.freeOrderObject(order);
     if (orderPool[currentFreeOrderIndex] == null) {
       orderPool[currentFreeOrderIndex] = order;
@@ -99,5 +100,13 @@ public final class MatchingEngine {
     } else {
       priceLevelPool[++currentFreePriceLevelIndex] = priceLevel;
     }
+  }
+
+  public static Order getNewOrder() {
+    return orderPool[currentFreeOrderIndex--];
+  }
+
+  public static PriceLevel getNewPriceLevel() {
+      return priceLevelPool[currentFreePriceLevelIndex--];
   }
 }
