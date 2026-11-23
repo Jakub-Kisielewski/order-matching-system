@@ -1,5 +1,7 @@
 # Order matching system
 
+Currently WIP
+
 ## Trade lifecycle in this system
 ### High level
 Client connects to Netty server and submits either a market/limit buy/sell order (over TCP using the FIX protocol) to the matching engine which will find a matching
