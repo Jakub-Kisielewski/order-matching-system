@@ -25,3 +25,7 @@ replay_pid*
 
 .vscode/
 target/
+
+.classpath
+.project
+.settings/
