@@ -177,9 +177,12 @@ final class OrderBook {
         return priceLevel;
     }
 
-    final void freeOrderBookObject(OrderBook orderBook) {
+    static void freeOrderBookObject(OrderBook orderBook) {
         orderBook.buyTree.clear();
         orderBook.sellTree.clear();
+        orderBook.buyPriceLevels.clear();
+        orderBook.sellPriceLevels.clear();
+        orderBook.orders.clear();
     }
 
     private final void freePriceLevelObject(PriceLevel priceLevel) {

@@ -34,7 +34,7 @@ final class OrderBookTest {
     order.isBuy = true;
     Order order2 = new Order();
     order2.price = 10;
-    order.isBuy = true;
+    order2.isBuy = true;
     orderBook.addOrderToBuyTree(order);
     PriceLevel addedToPriceLevel = orderBook.addOrderToBuyTree(order2);
     assertEquals(order2.price, addedToPriceLevel.priceLevel);
@@ -60,7 +60,7 @@ final class OrderBookTest {
     order.isBuy = false;
     Order order2 = new Order();
     order2.price = 10;
-    order.isBuy = false;
+    order2.isBuy = false;
     orderBook.addOrderToSellTree(order);
     PriceLevel addedToPriceLevel = orderBook.addOrderToSellTree(order2);
     assertEquals(order2.price, addedToPriceLevel.priceLevel);

@@ -27,7 +27,7 @@ final class Order {
 
 	static void freeOrderObject(Order order) {
 		order.idNumber = 0;
-		order.isBuy = true;
+		order.isBuy = false;
 		order.isMarketOrder = false;
 		order.shares = 0;
 		order.price = 0;
