@@ -1,112 +1,25 @@
 package com.quant.clob.engine;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public final class MatchingEngine {
 
-  static Map<Integer, Order> orders;
-  static Map<Integer, PriceLevel> buyPriceLevels;
-  static Map<Integer, PriceLevel> sellPriceLevels;
-  static Order[] orderPool;
-  static int currentFreeOrderIndex;
-  static PriceLevel[] priceLevelPool;
-  static int currentFreePriceLevelIndex;
-  
-  static OrderBook orderBook;
+  final OrderBook orderBook;
+  final OrderPool orderPool;
+  final PriceLevelPool priceLevelPool;
+  final int assetIPOReferencePrice = 0; // change once decide what asset to trade
 
-  static int assetIPOReferencePrice; // change once decide what asset to trade
-
-  MatchingEngine() {
-    orders = new HashMap<>();
-    buyPriceLevels = new HashMap<>();
-    sellPriceLevels = new HashMap<>();
-    orderPool = new Order[50];
-    currentFreeOrderIndex = 0;
-    priceLevelPool = new PriceLevel[50];
-    currentFreePriceLevelIndex = 0;
-    orderBook = new OrderBook();
-    assetIPOReferencePrice = 0;
+  public MatchingEngine(OrderBook orderBook, OrderPool orderPool, PriceLevelPool priceLevelPool) {
+    this.orderBook = orderBook;
+    this.orderPool = orderPool;
+    this.priceLevelPool = priceLevelPool;
   }
 
-  public void seedOrderBook() {
+  public void executeOrder(Order order) {
+    orderBook.executeOrder(order);
 
   }
 
   public void cancelOrder(Order order) {
-    PriceLevel priceLevel;
-    if (order.isBuy) {
-      priceLevel = buyPriceLevels.get(order.price);
-      priceLevel.removeOrder(order);
-      if (priceLevel.isEmpty()) {
-        OrderBook.buyTree.remove(priceLevel.priceLevel);
-        freePriceLevelObject(priceLevel);
-      }
-    } else {
-      priceLevel = sellPriceLevels.get(order.price);
-      priceLevel.removeOrder(order);
-      if (priceLevel.isEmpty()) {
-        OrderBook.sellTree.remove(priceLevel.priceLevel);
-        freePriceLevelObject(priceLevel);
-      }
-    }
-
-    orders.remove(order.idNumber);
-    freeOrderObject(order);
-  }
-  
-  public void addOrder(Order order) {
-    PriceLevel priceLevelOrderAddedTo;
-    if (order.isMarketOrder) {
-      priceLevelOrderAddedTo = orderBook.executeMarketOrder(order);
-    } else {
-      priceLevelOrderAddedTo = orderBook.executeLimitOrder(order);
-    }
-
-    if (priceLevelOrderAddedTo == null) {
-      freeOrderObject(order);
-      return;
-    }
-
-    if (order.isBuy && !(buyPriceLevels.containsKey(priceLevelOrderAddedTo.priceLevel))) {
-      buyPriceLevels.put(priceLevelOrderAddedTo.priceLevel, priceLevelOrderAddedTo);
-    } else if (!(order.isBuy) && !(sellPriceLevels.containsKey(priceLevelOrderAddedTo.priceLevel))) {
-      sellPriceLevels.put(priceLevelOrderAddedTo.priceLevel, priceLevelOrderAddedTo);
-    }
-
-    orders.put(order.idNumber, order);
+    orderBook.cancelOrder(order);
   }
 
-  public static void freeOrderObject(Order order) {
-    orders.remove(order.idNumber);
-    Order.freeOrderObject(order);
-    if (orderPool[currentFreeOrderIndex] == null) {
-      orderPool[currentFreeOrderIndex] = order;
-    } else {
-      orderPool[++currentFreeOrderIndex] = order;
-    }
-  }
-
-  public static void freePriceLevelObject(PriceLevel priceLevel) {
-    if (buyPriceLevels.containsKey(priceLevel.priceLevel)) {
-      buyPriceLevels.remove(priceLevel.priceLevel);
-    } else {
-      sellPriceLevels.remove(priceLevel.priceLevel);
-    }
-
-    PriceLevel.freePriceLevelObject(priceLevel);
-    if (priceLevelPool[currentFreePriceLevelIndex] == null) {
-      priceLevelPool[currentFreePriceLevelIndex] = priceLevel;
-    } else {
-      priceLevelPool[++currentFreePriceLevelIndex] = priceLevel;
-    }
-  }
-
-  public static Order getNewOrder() {
-    return orderPool[currentFreeOrderIndex--];
-  }
-
-  public static PriceLevel getNewPriceLevel() {
-      return priceLevelPool[currentFreePriceLevelIndex--];
-  }
 }

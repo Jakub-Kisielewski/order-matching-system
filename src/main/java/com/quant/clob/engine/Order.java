@@ -5,7 +5,7 @@ final class Order {
 	boolean isBuy;
 	boolean isMarketOrder; // market order fills volume completely, limit order fills up to limit and is then added to tree
 	int shares;
-	int price;
+  int price;
 	int entryTime; // time order entered book
 	int eventTime; // timestamp for most recent update to order
 	Order nextOrder;

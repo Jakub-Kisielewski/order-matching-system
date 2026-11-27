@@ -11,7 +11,7 @@ final class PriceLevel {
     Order tailOrder; // newest order
 
     PriceLevel() {
-        this.priceLevel = 10;
+        this.priceLevel = 0;
         this.size = 0;
         this.totalVolume = 0;
         this.headOrder = null;
