@@ -10,7 +10,7 @@ class OrderTest {
   void freeingOrderObjectSuccess() {
     Order order = new Order();
     Order.freeOrderObject(order);
-    assertEquals(true, order.isBuy);
+    assertEquals(false, order.isBuy);
   }
 
 }

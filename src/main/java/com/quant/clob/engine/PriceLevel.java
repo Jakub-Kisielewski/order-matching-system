@@ -56,15 +56,13 @@ final class PriceLevel {
         this.size--;
     }
 
-    void fillOrder(Order order) {
-        while (order.shares > 0) {
-            if (headOrder == null) {
-                break;
-            }
-
-            if (order.shares - headOrder.shares >= 0) {
-                order.shares -= headOrder.shares;
-                removeOrder(headOrder);
+    void fillOrder(Order order, MatchListener matchListener) {
+        while (order.shares > 0 && headOrder != null) {
+            Order resting = headOrder;
+            if (order.shares >= resting.shares) {
+                order.shares -= resting.shares;
+                removeOrder(resting);
+                matchListener.onOrderFilled(resting);
             } else {
                 headOrder.shares -= order.shares;
                 this.totalVolume -= order.shares;

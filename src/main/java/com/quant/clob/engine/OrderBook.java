@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
-final class OrderBook {
+final class OrderBook implements MatchListener {
     final TreeMap<Integer, PriceLevel> buyTree; // descending for highest bid
     final TreeMap<Integer, PriceLevel> sellTree; // ascending for lowest ask 
     private final Map<Integer, PriceLevel> buyPriceLevels;
@@ -54,7 +54,7 @@ final class OrderBook {
                     return null;
                 }
 
-                currentBestAsk.fillOrder(order);
+                currentBestAsk.fillOrder(order, this);
 
                 if (currentBestAsk.isEmpty()) {
                     PriceLevel removedPriceLevel = sellTree.remove(currentBestAsk.priceLevel);
@@ -68,7 +68,7 @@ final class OrderBook {
                     return null;
                 }
 
-                currentBestBid.fillOrder(order);
+                currentBestBid.fillOrder(order, this);
 
                 if (currentBestBid.isEmpty()) {
                     PriceLevel removedPriceLevel = buyTree.remove(currentBestBid.priceLevel);
@@ -88,7 +88,7 @@ final class OrderBook {
             while (order.price >= getBestAsk().priceLevel) {
                 PriceLevel currentBestAsk = getBestAsk();
 
-                currentBestAsk.fillOrder(order);
+                currentBestAsk.fillOrder(order, this);
 
                 if (currentBestAsk.isEmpty()) {
                     PriceLevel removedPriceLevel = sellTree.remove(currentBestAsk.priceLevel);
@@ -113,7 +113,7 @@ final class OrderBook {
             while (order.price <= getBestBid().priceLevel) {
                 PriceLevel currentBestBid = getBestBid();
 
-                currentBestBid.fillOrder(order);
+                currentBestBid.fillOrder(order, this);
 
                 if (currentBestBid.isEmpty()) {
                     PriceLevel removedPriceLevel = buyTree.remove(currentBestBid.priceLevel);
@@ -215,4 +215,14 @@ final class OrderBook {
         output.append("Sell Tree: " + sellTree.toString() + "\n");
         return output.toString();
     }
+
+    @Override
+    public void onTrade(Order resting, Order order, int quantity) {//  reporting eventually
+        }
+
+    @Override
+    public void onOrderFilled(Order resting) {
+        freeOrderObject(resting);
+    }
+
 }

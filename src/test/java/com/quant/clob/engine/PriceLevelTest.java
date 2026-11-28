@@ -2,9 +2,20 @@ package com.quant.clob.engine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 class PriceLevelTest {
+  
+  final class TestListener implements MatchListener {
+    final List<Integer> filledIds = new ArrayList<>();
+    @Override 
+    public void onTrade(Order resting, Order order, int quantity) {}
+    @Override 
+    public void onOrderFilled(Order resting) { filledIds.add(resting.idNumber); }
+}
 
   @Test
   void addOrder_Success() {
@@ -77,7 +88,7 @@ class PriceLevelTest {
     Order orderToFill = new Order();
     orderToFill.shares = 10;
     priceLevel.addOrder(order1);
-    priceLevel.fillOrder(orderToFill);
+    priceLevel.fillOrder(orderToFill, new TestListener());
     assertEquals(0, priceLevel.size);
     assertEquals(0, orderToFill.shares);
   }
@@ -90,7 +101,7 @@ class PriceLevelTest {
     Order orderToFill = new Order();
     orderToFill.shares = 10;
     priceLevel.addOrder(order1);
-    priceLevel.fillOrder(orderToFill);
+    priceLevel.fillOrder(orderToFill, new TestListener());
     assertEquals(0, priceLevel.size);
     assertEquals(5, orderToFill.shares);
   }
@@ -106,7 +117,7 @@ class PriceLevelTest {
     orderToFill.shares = 10;
     priceLevel.addOrder(order1);
     priceLevel.addOrder(order2);
-    priceLevel.fillOrder(orderToFill);
+    priceLevel.fillOrder(orderToFill, new TestListener());
     assertEquals(0, priceLevel.size);
     assertEquals(0, orderToFill.shares);
   }
