@@ -134,6 +134,10 @@ final class OrderBook implements MatchListener {
     }
 
     void cancelOrder(Order order) {
+        if (!orders.containsKey(order.idNumber)) {
+            throw new NullPointerException("Cancel attempt failed with order id " + order.idNumber);
+        }
+
         PriceLevel priceLevel;
         if (order.isBuy) {
             priceLevel = buyPriceLevels.get(order.price);

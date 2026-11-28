@@ -14,8 +14,10 @@ public final class MatchingEngine {
   }
 
   public void executeOrder(Order order) {
+    if (order.shares <= 0 || order.price <= 0 || order == null) {
+      throw new NullPointerException("Invalid input order with id: " + order.idNumber);
+    }
     orderBook.executeOrder(order);
-
   }
 
   public void cancelOrder(Order order) {
